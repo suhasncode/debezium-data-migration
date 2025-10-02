@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.37.0 (HEAD)
+  labels:
+    io.kompose.service: postgre-dst-db
+  name: postgre-dst-db
+spec:
+  ports:
+    - name: "54321"
+      port: 54321
+      targetPort: 5432
+  selector:
+    io.kompose.service: postgre-dst-db
