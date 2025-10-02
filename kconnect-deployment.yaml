@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.37.0 (HEAD)
+  labels:
+    io.kompose.service: kconnect
+  name: kconnect
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: kconnect
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.37.0 (HEAD)
+      labels:
+        io.kompose.service: kconnect
+    spec:
+      containers:
+        - env:
+            - name: BOOTSTRAP_SERVERS
+              value: kafka-1:29092,kafka-2:29093
+            - name: CONFIG_STORAGE_TOPIC
+              value: debezium_connect_configs
+            - name: CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL
+              value: http://schema-registry:8081
+            - name: CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
+              value: http://schema-registry:8081
+            - name: GROUP_ID
+              value: "1"
+            - name: KEY_CONVERTER
+              value: io.confluent.connect.avro.AvroConverter
+            - name: OFFSET_STORAGE_TOPIC
+              value: debezium_connect_offsets
+            - name: STATUS_STORAGE_TOPIC
+              value: debezium_connect_status
+            - name: VALUE_CONVERTER
+              value: io.confluent.connect.avro.AvroConverter
+          image: kconnect
+          name: kconnect
+          ports:
+            - containerPort: 8083
+              protocol: TCP
+      restartPolicy: Always

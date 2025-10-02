@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.37.0 (HEAD)
+  labels:
+    io.kompose.service: kafka-connect-ui
+  name: kafka-connect-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: kafka-connect-ui
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.37.0 (HEAD)
+      labels:
+        io.kompose.service: kafka-connect-ui
+    spec:
+      containers:
+        - env:
+            - name: CONNECT_URL
+              value: http://kconnect:8083
+          image: landoop/kafka-connect-ui
+          name: kafka-connect-ui
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+      restartPolicy: Always
